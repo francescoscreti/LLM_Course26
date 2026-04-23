@@ -3,7 +3,7 @@ import re
 from collections import Counter
 from typing import List
 
-class SimpleTokenizer:
+class SimpleTokenizer: 
     """
     Tokenizer minimale a parole intere.
     Non è sofisticato: non gestisce le parole composte, i prefissi/suffissi,
@@ -74,7 +74,18 @@ class SimpleTokenizer:
         # Input:  texts = ["il film è bello", "non mi è piaciuto", ...]
         # Output: self.vocab = {"[PAD]": 0, "[UNK]": 1, "[CLS]": 2,
         #                       "il": 3, "film": 4, ...}
-        pass
+
+        token_freq = Counter() # contatore vuoto
+        for text in texts: # scorre ogni frase
+            tokens = self._tokenize(text) # frase -> lista di parole
+            token_freq.update(tokens) # aggiunge le parole al contatore
+
+        most_common = [word for word, _ in token_freq.most_common(max_vocab - 3)] # parole più frequenti
+        self.vocab = {self.PAD: 0, self.UNK: 1, self.CLS: 2} # token speciali agli indici 0,1,2
+        for i, word in enumerate(most_common, start=3): # scorre le parole partendo dall'indice 3
+            self.vocab[word] = i # aggiunge ogni parola al vocabolario
+        self.inv_vocab = {v: k for k, v in self.vocab.items()} # vocabolario inverso: numero -> parola
+
 
     # ------------------------------------------------------------------
     # 3. Encode e decode
@@ -96,7 +107,8 @@ class SimpleTokenizer:
         #
         # Input:  "il film è bello"
         # Output: [3, 4, 1, 5]   (esempio — gli indici dipendono dal vocab)
-        pass
+        tokens = self._tokenize(text)    # frase -> lista di parole
+        return [self.vocab.get(token, self.vocab[self.UNK]) for token in tokens]  # ogni parola -> indice
 
     def decode(self, ids: List[int]) -> str:
         """
