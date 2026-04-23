@@ -87,7 +87,7 @@ for testo, etichetta_vera in frasi:
 
     with torch.no_grad():
         # no_grad disabilita il calcolo dei gradienti
-        # non stiamo addestrando — risparmia memoria e velocizza
+        # non stiamo addestrando: risparmia memoria e velocizza
         outputs = model(**inputs)
         # **inputs spacchetta il dizionario come argomenti separati:
         # model(input_ids=..., attention_mask=..., token_type_ids=...)
@@ -98,7 +98,7 @@ for testo, etichetta_vera in frasi:
 
     predizione_binaria = stelle_a_binario(indice_predetto)
 
-    corretto = "✓" if predizione_binaria == etichetta_vera else "✗"
+    corretto = "V" if predizione_binaria == etichetta_vera else "X"
     if predizione_binaria == etichetta_vera:
         corretti += 1
 
