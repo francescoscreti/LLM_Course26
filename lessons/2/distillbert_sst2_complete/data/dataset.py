@@ -5,12 +5,15 @@ from transformers import AutoTokenizer
 import sys
 import os
 
+# from distillbert_sst2_complete.data import dataset
+
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # aggiungiamo la cartella padre al path
 from config import(
     MODEL,
     DATASET,
     DATASET_CONFIG,
-    MAX_LENGTH
+    MAX_LENGTH,
+    TEXT_COL
 )
 
 def load_data():
@@ -21,22 +24,42 @@ def load_data():
     tokenizer = AutoTokenizer.from_pretrained(MODEL)
 
     # Tokenizziamo il dataset
+    # def tokenize_function(examples):
+    #     return tokenizer(
+    #         examples['sentence'],  # la colonna con i testi si chiama 'sentence' in SST-2
+    #         padding='max_length',  # aggiungiamo padding fino a MAX_LENGTH
+    #         truncation=True,       # trunchiamo se la sequenza è più lunga di MAX_LENGTH
+    #         max_length=MAX_LENGTH,
+    #     )
+
+    # tokenized_dataset = dataset.map(
+    #     tokenize_function,
+    #     batched=True, 
+    #     remove_columns=['sentence','idx'])  # rimuoviamo la colonna originale dei testi
+    
+    # tokenized_dataset["train"]      = tokenized_dataset["train"].select(range(1000))
+    # tokenized_dataset["validation"] = tokenized_dataset["validation"].select(range(100))
+
+    # return tokenized_dataset, tokenizer
+
     def tokenize_function(examples):
         return tokenizer(
-            examples['sentence'],  # la colonna con i testi si chiama 'sentence' in SST-2
-            padding='max_length',  # aggiungiamo padding fino a MAX_LENGTH
-            truncation=True,       # trunchiamo se la sequenza è più lunga di MAX_LENGTH
+            examples[TEXT_COL],
+            truncation=True,
+            padding=False,
             max_length=MAX_LENGTH,
         )
 
     tokenized_dataset = dataset.map(
         tokenize_function,
-        batched=True, 
-        remove_columns=['sentence','idx'])  # rimuoviamo la colonna originale dei testi
-    
-    tokenized_dataset["train"]      = tokenized_dataset["train"].select(range(1000))
-    tokenized_dataset["validation"] = tokenized_dataset["validation"].select(range(100))
+        batched=True,
+        remove_columns=[TEXT_COL, "id", "label_category",
+                        "label_intent", "source", "language",
+                        "context", "metadata"],
+    )
 
+    # rinomina label_binary in labels — il Trainer si aspetta "labels"
+    tokenized_dataset = tokenized_dataset.rename_column("label_binary", "labels")
     return tokenized_dataset, tokenizer
 
 if __name__ == "__main__":
