@@ -19,13 +19,12 @@ MODEL = "t5-small"
 # ── dataset per task ──────────────────────────────────────────────
 DATASET_CONFIG = {
     "summarization": {
-        "name":         "cnn_dailymail",
-        "config":       "3.0.0",
-        "input_col":    "article",
-        "target_col":   "highlights",
-        "prefix":       "summarize: ",
-        # T5 usa un prefisso testuale per capire il task 
-        # "summarize: " dice al modello cosa deve fare
+        "name":       "ARTeLab/ilpost",
+        "config":     None,           # nessuna sottoconfig
+        "input_col":  "source",
+        "target_col": "target",
+        "prefix":     "summarize: ",
+        "lang":       "it", 
     },
     "translation": {
         "name":       "opus_books",
@@ -66,8 +65,8 @@ SAVE_TOTAL_LIMIT = 2
 LOGGING_STEPS    = 100
 
 # ── campionamento per la demo ─────────────────────────────────────
-MAX_TRAIN_SAMPLES = 1000    # None per usare tutto il dataset
-MAX_EVAL_SAMPLES  = 200
+MAX_TRAIN_SAMPLES = None   # None per usare tutto il dataset
+MAX_EVAL_SAMPLES  = None 
 
 # ── output ────────────────────────────────────────────────────────
 SEED = 42
