@@ -8,7 +8,7 @@ import re
 import ollama
 from dataset_qa import QA_DATASET
 
-MODEL = "gemma2:2b"
+MODEL = "llama3.2:3b"
 N = 5  # quante domande testare: aumenta per risultati più stabili
 
 

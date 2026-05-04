@@ -12,7 +12,7 @@ import ollama
 # 0. Configurazione — cambia il modello qui
 # ------------------------------------------------------------------
 
-MODEL = "gemma2:2b"
+MODEL = "llama3.2:3b"
 # oppure: MODEL = "llama3.2:3b"
 # oppure usa file config.py per centralizzare la configurazione
 # ------------------------------------------------------------------
